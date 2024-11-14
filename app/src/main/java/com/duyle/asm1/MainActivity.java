@@ -2,6 +2,8 @@ package com.duyle.asm1;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,6 +66,61 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<CarModel>> call, Throwable t) {
                 Log.e("Main", t.getMessage());
+            }
+        });
+
+        findViewById(R.id.btn_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CarModel xeMoi = new CarModel(null, "Xe moi - md19304", 2023, "Toyota", 10000);
+
+                Call<List<CarModel>> callAddXe = apiService.addXe(xeMoi);
+
+                callAddXe.enqueue(new Callback<List<CarModel>>() {
+                    @Override
+                    public void onResponse(Call<List<CarModel>> call, Response<List<CarModel>> response) {
+                        if (response.isSuccessful()) {
+                            listCarModel.clear();
+                            listCarModel.addAll(response.body());
+                            carAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<CarModel>> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+        lvMain.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                CarModel xeCanXoa = listCarModel.get(position);
+
+
+
+                Call<List<CarModel>> callXoaXe = apiService.xoaXe(xeCanXoa.get_id());
+
+                callXoaXe.enqueue(new Callback<List<CarModel>>() {
+                    @Override
+                    public void onResponse(Call<List<CarModel>> call, Response<List<CarModel>> response) {
+                        if (response.isSuccessful()) {
+                            listCarModel.clear();
+                            listCarModel.addAll(response.body());
+                            carAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<CarModel>> call, Throwable t) {
+
+                    }
+                });
+
+                return false;
             }
         });
 
