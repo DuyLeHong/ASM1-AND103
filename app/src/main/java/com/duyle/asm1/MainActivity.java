@@ -65,5 +65,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_add).setOnClickListener(v -> {
+            CarModel xe = new CarModel("Xe 1411", 2023, "Toyota", 1200);
+
+            Call<List<CarModel>> callAddXe = apiService.addCar(xe);
+
+            callAddXe.enqueue(new Callback<List<CarModel>>() {
+                @Override
+                public void onResponse(Call<List<CarModel>> call, Response<List<CarModel>> response) {
+                    if (response.isSuccessful()) {
+
+                        listCarModel.clear();
+
+                        listCarModel.addAll(response.body());
+
+                        carAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<CarModel>> call, Throwable t) {
+                    Log.e("Main", t.getMessage());
+                }
+            });
+        });
+
     }
 }

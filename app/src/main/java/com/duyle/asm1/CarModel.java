@@ -19,6 +19,13 @@ public class CarModel {
         this.gia = gia;
     }
 
+    public CarModel(String ten, int namSX, String hang, double gia) {
+        this.ten = ten;
+        this.namSX = namSX;
+        this.hang = hang;
+        this.gia = gia;
+    }
+
     public String get_id() {
         return _id;
     }
